@@ -8,6 +8,7 @@ const screen = document.querySelector('.screen')
 const operators = document.querySelectorAll('.operator')
 const clear = document.querySelector('.delete')
 const equal = document.querySelector('.equal')
+
 function multiply(a, b) {
     return result = a * b;
 }
@@ -41,29 +42,32 @@ function operate(firstNumber, choice, secondNumber) {
 }
 
 function takeNumber (num) {
-    currentNumber += num
+    if(currentNumber.length < 12)
+        currentNumber += num
 }
+function roundResult(number) {
+    return Math.round(number * 100) / 100
+  }
 
 function takeOperator(opt) {
     if(currentNumber != ""){
         operator = opt
         previousNumber = currentNumber
         currentNumber = ""
-        isTypingNumber = false;
     }
     else {
         operator = opt
     }
 }
-function calculate(){
+function calculate(){ 
     if(operator != "" && currentNumber!= ""){
         previousNumber = Number(previousNumber)
         currentNumber = Number(currentNumber)
-        result = operate(previousNumber, operator, currentNumber)
+        result = roundResult(operate(previousNumber, operator, currentNumber))
         operator = ""
         screen.textContent = result;
-        currentNumber = result;
-        previousNumber = ""
+        currentNumber = result
+        previousNumber = "";
     }
 }
 function clean() {
@@ -79,7 +83,7 @@ numbers.forEach((button => {
         // Check if the button clicked is a decimal point
         if(button.textContent == "."){ 
             //Check if the current number being entered already contains a decimal point
-            if (currentNumber.includes("."))
+            if (currentNumber.toString().includes("."))
             {
                 return //If yes, exit the function to prevent adding another decimal point
             }
@@ -90,6 +94,8 @@ numbers.forEach((button => {
         }
         takeNumber(button.textContent) //Process the number clicked and update the currentNumber variable
         // If the screen content is "0", handle differently
+        
+        if(screen.textContent.length < 12){
         if(screen.textContent == "0") {
             // If the button clicked is a decimal point, append it to "0"
             if(button.textContent =='.'){
@@ -103,7 +109,10 @@ numbers.forEach((button => {
         // If the screen content is not "0", simply append the button's text content to it
         else {
             screen.textContent += button.textContent
-        }   
+        }
+    }
+
+         
     })
 })) 
 
