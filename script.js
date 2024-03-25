@@ -49,6 +49,7 @@ function takeOperator(opt) {
         operator = opt
         previousNumber = currentNumber
         currentNumber = ""
+        isTypingNumber = false;
     }
     else {
         operator = opt
@@ -74,19 +75,32 @@ function clean() {
 equal.addEventListener("click", calculate)
 
 numbers.forEach((button => {
-    button.addEventListener("click" , () => {
-        if(screen.textContent == "undefined") {
-            clean()
+    button.addEventListener("click" , () => {   
+        // Check if the button clicked is a decimal point
+        if(button.textContent == "."){ 
+            //Check if the current number being entered already contains a decimal point
+            if (currentNumber.includes("."))
+            {
+                return //If yes, exit the function to prevent adding another decimal point
+            }
         }
-        takeNumber(button.textContent)
+        //Check if the screen content is "undefined"
+        if(screen.textContent == "undefined") {
+            clean() //Whipe out all the data when the user press a buttom
+        }
+        takeNumber(button.textContent) //Process the number clicked and update the currentNumber variable
+        // If the screen content is "0", handle differently
         if(screen.textContent == "0") {
+            // If the button clicked is a decimal point, append it to "0"
             if(button.textContent =='.'){
                 screen.textContent += button.textContent;
             }
+             // If the button clicked is not a decimal point, replace "0" with the button's text content
             else {
                 screen.textContent = button.textContent
             }
         }
+        // If the screen content is not "0", simply append the button's text content to it
         else {
             screen.textContent += button.textContent
         }   
@@ -94,7 +108,7 @@ numbers.forEach((button => {
 })) 
 
 operators.forEach((button) => {
-    button.addEventListener("click" , () => {
+    button.addEventListener("click" , () => { 
         if(screen.textContent == "undefined"){
             clean()
         }     
