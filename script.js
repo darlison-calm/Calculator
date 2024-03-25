@@ -1,23 +1,19 @@
-
 let currentNumber = "" ;
 let previousNumber = "" ;
 let operator = "";
 let result = ""
-
-let operatorExist = false;
-let previousNumberExist = false;
-let currentNumberExist = false;
 
 const numbers = document.querySelectorAll(".number")
 const screen = document.querySelector('.screen')
 const operators = document.querySelectorAll('.operator')
 const clear = document.querySelector('.delete')
 const equal = document.querySelector('.equal')
-
 function multiply(a, b) {
     return result = a * b;
 }
 function divide(a, b){
+    if(b == 0) return "undefined"
+    
     return a / b;
 }
 function add(a, b) {
@@ -46,51 +42,65 @@ function operate(firstNumber, choice, secondNumber) {
 
 function takeNumber (num) {
     currentNumber += num
-    currentNumberExist = true;
 }
 
 function takeOperator(opt) {
     if(currentNumber != ""){
         operator = opt
-        operatorExist = true;
         previousNumber = currentNumber
         currentNumber = ""
-        previousNumberExist = true;
     }
     else {
         operator = opt
-        operatorExist = true;
     }
 }
-
 function calculate(){
-    previousNumber = Number(previousNumber)
-    currentNumber = Number(currentNumber)
-    result = operate(previousNumber, operator, currentNumber)
-    operator = ""
-    screen.textContent = result;
-    currentNumber = result;
-    previousNumber = ""
+    if(operator != "" && currentNumber!= ""){
+        previousNumber = Number(previousNumber)
+        currentNumber = Number(currentNumber)
+        result = operate(previousNumber, operator, currentNumber)
+        operator = ""
+        screen.textContent = result;
+        currentNumber = result;
+        previousNumber = ""
+    }
 }
-
-function autoEqual (){
-   
-    
+function clean() {
+    screen.textContent = '0'
+    operator = ''
+    currentNumber = ''
+    previousNumber = ''
 }
-
-
-
 equal.addEventListener("click", calculate)
 
 numbers.forEach((button => {
     button.addEventListener("click" , () => {
+        if(screen.textContent == "undefined") {
+            clean()
+        }
         takeNumber(button.textContent)
-        screen.textContent += button.textContent
+        if(screen.textContent == "0") {
+            if(button.textContent =='.'){
+                screen.textContent += button.textContent;
+            }
+            else {
+                screen.textContent = button.textContent
+            }
+        }
+        else {
+            screen.textContent += button.textContent
+        }   
     })
 })) 
 
 operators.forEach((button) => {
     button.addEventListener("click" , () => {
+        if(screen.textContent == "undefined"){
+            clean()
+        }     
+        if(operator!= "" && currentNumber != ""){
+            calculate()
+        }  
         let last_char = screen.textContent.slice(-1)
         if(last_char == "+" || last_char == "-"|| last_char == "*" || last_char == "/") {  
             screen.textContent = (screen.textContent.slice(0, -1)) + button.textContent   
@@ -103,12 +113,7 @@ operators.forEach((button) => {
 
     })
 }); 
-clear.addEventListener("click" , () => {
-    screen.textContent = ''
-    operator = ''
-    currentNumber = ''
-    previousNumber = ''
-})
+clear.addEventListener("click" , clean)
 
 
 
